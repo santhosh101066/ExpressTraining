@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const compression=require('compression')
 const { readFile } = require("fs");
 const request = require("./src/Request");
+const response = require("./src/Response");
+const multerReq = require("./src/MulterProcess");
 const app = express();
 const admin=express()
 const port = 3000;
@@ -39,6 +41,8 @@ admin.get("/",(req,res)=>{
 app.use(['/admin','/manager'],admin)
 
 app.use('/request',request)
+app.use('/response',response)
+app.use(multerReq)
 
 app.get("/", (req, res) => {
   res.render("index", { val: { name: "Aspire System" } });
