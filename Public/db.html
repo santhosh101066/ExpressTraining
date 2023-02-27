@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Driver</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px black solid;
+        border-collapse: collapse;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <th>S.No.</th>
+        <th>Name Of Product</th>
+        <th>Total Quantity</th>
+        <th>Price</th>
+        <th>Options</th>
+      </thead>
+      <tbody id="products"></tbody>
+    </table>
+    <br />
+    <hr />
+    <form onsubmit="AddProduct(event)">
+      <label
+        >Product Name : &emsp;
+        <input name="name" type="text" required />
+      </label>
+      <br /><br />
+      <label
+        >Total Quantity : &emsp;
+        <input name="Total_Qty" type="number" required />
+      </label>
+      <br /><br />
+      <label
+        >Price : &emsp; &emsp; &emsp; &emsp;
+        <input name="price" type="number" required />
+      </label>
+      <br /><br />
+      <label
+        >Unit : &emsp; &emsp; &emsp; &nbsp; &nbsp; &nbsp;
+        <input name="weightUnit" type="text" required />
+      </label>
+      <br /><br />
+      <button type="submit">Add Product</button>
+    </form>
+    <script>
+      const tableBody = document.getElementById("products");
+      function initialize() {
+        tableBody.innerHTML=''
+        fetch("http://localhost:3000/base").then(async (res) => {
+          const data = await res.json();
+          data.length===0 && (tableBody.innerHTML='Empty')
+          data.map((val, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${index + 1}</td> <td>${val.name}</td> <td>${
+              val.Total_Qty
+            }</td> <td>${val.price} /${val.weightUnit}</td><td><button onclick="Delete('${val._id}')" >Delete</button></td>`;
+            tableBody.appendChild(tr);
+          });
+        });
+      }
+      initialize();
+
+      function AddProduct(e) {
+        e.preventDefault();
+        const formdata = new FormData(e.target);
+        const data={}
+        formdata.forEach((val,key)=>data[key]=val)
+        console.log(data);
+        fetch("http://localhost:3000/base/add", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers:{'Content-Type':'application/json'}
+        }).then(async (res) => {
+          const info = await res.json();
+          alert("Product Added Sucessfully\nInfo : " + JSON.stringify(info));
+          initialize();
+        });
+      }
+
+      function Delete(id){
+         fetch("http://localhost:3000/base/delete/"+id,{method:'DELETE'}).then(async res=>{
+            const data= await res.json()
+            console.log(data);
+            alert("Deleted Sucessfully")
+            initialize()
+         })
+      }
+    </script>
+  </body>
+</html>

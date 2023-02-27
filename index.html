@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Express Practice</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h1>Home Page</h1>
+    <h2>{{content}}</h2>
+    <h6>The data is : {{name}}</h6>
+    <a href="/hello">hello</a>
+    <a href="/error">Broken page</a>
+    <a href="/unauth">UnAuthorized page</a>
+    <br/>
+    <a href="/db.html">Database Page</a>
+    <a href="/closehost">Kill Server</a>
+    <hr />
+    <form method="post" action="/singlefile" enctype="multipart/form-data">
+      <label>
+        Single upload :
+        <input accept="image/*" name="single" type="file" required />
+      </label>
+      <label>
+        Input Text Field :
+        <input type="text" name="text" />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+    <hr />
+    <form method="post" action="/multiple" enctype="multipart/form-data">
+      <label>
+        Multiple upload:
+        <input accept="image/*" name="multi" type="file" multiple required />
+        <br />
+        Note: max 5 files only allowed
+        <br/>
+        <button type="submit">Submit</button>
+       
+      </label>
+      
+    </form>
+    <hr />
+    <div id="img-content" class="images-content"></div>
+    <script>
+      const imageContainer = document.getElementById("img-content");
+      fetch("/request").then((res) => {
+        res.json().then((data) => {
+          data.files.map((val) => {
+            const img = document.createElement("img");
+            img.src = "/content/" + val;
+            imageContainer.appendChild(img);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

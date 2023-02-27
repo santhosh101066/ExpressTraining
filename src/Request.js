@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-
+const {readdirSync}= require('fs')
 router.get("/base", (req, res) => {
   res.send(`<pre>
     ${req.baseUrl}
@@ -38,5 +38,9 @@ router.post("/text", bodyParser.text({ extended: false }), (req, res) => {
 router.post("/json", bodyParser.json(), (req, res) => {
   res.send(req.body);
 });
+router.get('/',(req,res)=>{
+  const files= readdirSync('./uploads')
+  res.json({files})
+})
 
 module.exports = router;
